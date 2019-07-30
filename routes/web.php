@@ -24,4 +24,10 @@ Route::group(['middleware' => ['auth']],function (){
     Route::put('user_addresses/{user_address}','UserAddressController@update')->name('user_addresses.update');
     Route::delete('user_addresses/{user_address}','UserAddressController@destroy')->name('user_addresses.destroy');
 
+
+    //收藏商品
+    Route::post('products/{product}/favorite', 'ProductController@favor')->name('products.favor');
+    //取消收藏商品
+    Route::delete('products/{product}/favorite', 'ProductController@disfavor')->name('products.disfavor');
+
 });

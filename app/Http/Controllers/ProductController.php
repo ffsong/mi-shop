@@ -51,16 +51,23 @@ class ProductController extends Controller
         ]);
     }
 
-    public function show(Product $product)
+    public function show(Product $product,  Request $request)
     {
         // 判断商品是否已经上架，如果没有上架则抛出异常。
         if (!$product->on_sale) {
             throw new InvalidRequestException('商品未上架');
         }
 
+        $favored = false;
+
+        // 用户未登录时返回的是 null，已登录时返回的是对应的用户对象
+        if($user = $request->user()) {
+            $favored = boolval($user->favoriteProducts()->find($product->id));
+        }
+
         $product['skus'] = $product->getSkusAll();
 
-        return view('products.show',['product' =>$product]);
+        return view('products.show',['product' => $product, 'favored' => $favored]);
     }
 
     //获取商品价格和库存
@@ -77,6 +84,31 @@ class ProductController extends Controller
         }
 
         return json_encode(['msg'=> 'error','data' => '商品存在']);
+    }
+
+    // 新增用户商品收藏
+    public function favor(Product $product, Request $request)
+    {
+
+        $user = $request->user();
+
+        // 用户是否已收藏该商品
+        if ($user->favoriteProducts()->find($product->id)) {
+            return [];
+        }
+
+        $user->favoriteProducts()->attach($product);
+
+        return [];
+    }
+
+    // 用户取消收藏
+    public function disfavor(Product $product, Request $request)
+    {
+        $user = $request->user();
+        $user->favoriteProducts()->detach($product);
+
+        return [];
     }
 
 
