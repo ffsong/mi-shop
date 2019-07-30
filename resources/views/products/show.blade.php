@@ -72,8 +72,7 @@
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
 
-            var list = [];
-
+            var list = {};
             $('.sku-btn').click(function () {
 
                  var id = $(this).data('id');
@@ -89,7 +88,7 @@
                     }
                     console.log('商品不存在')
 
-                    $('.product-info .price span').text({{ $product->price }});
+                    $('.product-info .price span').text({{ $product->price }}+ '.00');
                     $('.product-info .stock').text('库存：' + 0 + '件');
                 });
             });

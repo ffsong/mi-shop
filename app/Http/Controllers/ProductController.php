@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\InvalidRequestException;
 use App\Product;
 use App\ProductSku;
 use http\Env\Response;
@@ -54,14 +55,10 @@ class ProductController extends Controller
     {
         // 判断商品是否已经上架，如果没有上架则抛出异常。
         if (!$product->on_sale) {
-            throw new \Exception('商品未上架');
+            throw new InvalidRequestException('商品未上架');
         }
 
-//        $product['skus_attribute'] = collect($product->skus)->toArray();
-
         $product['skus'] = $product->getSkusAll();
-
-//        dd($product);
 
         return view('products.show',['product' =>$product]);
     }
@@ -70,12 +67,17 @@ class ProductController extends Controller
     public function getPrice(ProductSku $productSku, Request $request)
     {
         $arr = $request->input('list');
-        $productSku = $productSku->checkSku($arr);
 
-         if(count($productSku) == 1){
-            return response()->json(['msg'=> 'ok','data' => $productSku[0]]);
-         }
+        if (count($arr)){
+            $productSku = $productSku->checkSku($arr);
+
+            if(count($productSku) == 1){
+                return response()->json(['msg'=> 'ok','data' => $productSku[0]]);
+            }
+        }
+
         return json_encode(['msg'=> 'error','data' => '商品存在']);
     }
+
 
 }
