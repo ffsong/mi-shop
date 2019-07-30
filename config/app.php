@@ -175,6 +175,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // ueditor 编辑器
+        Overtrue\LaravelUEditor\UEditorServiceProvider::class,
+
     ],
 
     /*

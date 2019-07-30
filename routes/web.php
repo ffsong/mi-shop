@@ -3,9 +3,14 @@
 //Route::get('/','PageController@index')->name('root')->middleware('verified');
 Route::get('/','PageController@index')->name('root');
 
+//商品列表
+Route::get('products','ProductController@index')->name('products.index');
+Route::get('products/{product}','ProductController@show')->name('products.show');
+Route::post('product','ProductController@getPrice')->name('products.price');
+
+
 // verify 参数 开启邮箱验证
 Auth::routes(['verify' => true]);
-
 
 
 Route::group(['middleware' => ['auth']],function (){
