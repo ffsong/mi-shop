@@ -9,7 +9,6 @@ Route::get('/','PageController@index')->name('root');
 // verify 参数 开启邮箱验证
 Auth::routes(['verify' => true]);
 
-
 Route::group(['middleware' => ['auth']],function (){
 
     //收货地址
@@ -21,13 +20,15 @@ Route::group(['middleware' => ['auth']],function (){
     Route::put('user_addresses/{user_address}','UserAddressController@update')->name('user_addresses.update');
     Route::delete('user_addresses/{user_address}','UserAddressController@destroy')->name('user_addresses.destroy');
 
-
     // 收藏列表
     Route::get('products/favorites', 'ProductController@favorites')->name('products.favorites');
     // 收藏商品
     Route::post('products/{product}/favorite', 'ProductController@favor')->name('products.favor');
     // 取消收藏商品
     Route::delete('products/{product}/favorite', 'ProductController@disfavor')->name('products.disfavor');
+
+    // 加入购物车
+    Route::post('cart', 'CartController@add')->name('cart.add');
 
 });
 

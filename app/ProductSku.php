@@ -20,6 +20,7 @@ class ProductSku extends Model
         return $this->belongsTo(Product::class);
     }
 
+    // 查询是否存在当前单品
     public function checkSku($arr = [])
     {
         foreach ($arr as $key => $value) {
