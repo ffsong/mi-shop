@@ -8,6 +8,6 @@ class PageController extends Controller
 {
     public function index()
     {
-        return view('pages.root');
+        return redirect()->route('products.index');
     }
 }
