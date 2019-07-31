@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Exceptions\InternalException;
+use App\Exceptions\InvalidRequestException;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductSku extends Model
@@ -45,5 +47,25 @@ class ProductSku extends Model
 
         return ProductSku::query()->whereRaw($sql)->get();
     }
+    
+    // 减少库存-返回影响的行数 -- 可预防超卖
+    public function decreaseStock($amount)
+    {
+        if($amount < 0){
+            throw new InternalException('减库存不可小于 0');
+        }
 
+        return $this->where('id', $this->id)->where('stock', '>=', $amount )->decrement('stock', $amount);
+    }
+
+    // 增加库存
+    public function addStock($amount)
+    {
+        if ($amount < 0) {
+            throw new InternalException('加库存不可小于0');
+        }
+
+        return $this->increment('stock', $amount);
+    }
+    
 }
