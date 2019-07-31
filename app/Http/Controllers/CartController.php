@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\CartItem;
 use App\Http\Requests\AddCartRequest;
 use App\ProductSku;
 use App\Services\CartService;
