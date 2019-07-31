@@ -104,11 +104,6 @@ class ProductsController extends AdminController
         // 创建一组单选框
         $form->radio('on_sale', '上架')->options(['1' => '是', '0'=> '否'])->default('0');
 
-//        // 定义事件回调，当模型即将保存时会触发这个回调
-//        $form->saving(function (Form $form) {
-//            $form->model()->price = collect($form->input('skus'))->where(Form::REMOVE_FLAG_NAME, 0)->min('price') ?: 0;
-//        });
-
         return $form;
     }
 }

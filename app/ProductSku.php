@@ -15,9 +15,16 @@ class ProductSku extends Model
         'attributes' => 'json', // 声明json类型
     ];
 
+    protected $appens = ['sku_info'];
+
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function getSkuInfoAttribute()
+    {
+        return implode(' | ', array_column(json_decode($this->attributes['attributes'],true), 'value')) ;
     }
 
     // 查询是否存在当前单品
