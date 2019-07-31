@@ -46,6 +46,13 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+
+        if ($exception instanceof  \Illuminate\Auth\Access\AuthorizationException)
+        {
+            //403 没有权限
+            throw new InternalException('error','没有权限', 403);
+        }
+
         return parent::render($request, $exception);
     }
 }

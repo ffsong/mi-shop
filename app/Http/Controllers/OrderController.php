@@ -16,14 +16,19 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $orders = Order::query()
-            // 使用 with 方法预加载，避免N + 1问题
             ->with(['items.product', 'items.productSku'])
             ->where('user_id', $request->user()->id)
             ->orderBy('created_at', 'desc')
             ->paginate();
 
         return view('orders.index', ['orders' => $orders]);
+    }
 
+    public function show(Order $order)
+    {
+        $this->authorize('own',$order);
+
+        return view('orders.show', ['order' => $order->load(['items.productSku', 'items.product'])]);
     }
 
     public function store(OrderRequest $request)
@@ -36,6 +41,7 @@ class OrderController extends Controller
             //更改地址最后一次使用
             $address->update(['last_used_at' => Carbon::now()]);
 
+            //  创建订单
             $order =  new Order([
               'address'=> [
                   'address'       => $address->full_address,
@@ -48,7 +54,6 @@ class OrderController extends Controller
             ]);
 
             $order->user_id = $request->user()->id;
-            //创建订单
             $order->save();
 
             //增加 订单详情纪录
@@ -85,4 +90,5 @@ class OrderController extends Controller
 
         return $order;
     }
+
 }
