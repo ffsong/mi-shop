@@ -28,6 +28,11 @@ class Product extends Model
         return $this->hasMany(ProductSku::class);
     }
 
+    public function items()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     public function getImageUrlAttribute()
     {
         // 如果 image 字段本身就已经是完整的 url 就直接返回
