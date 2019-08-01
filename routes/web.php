@@ -39,6 +39,10 @@ Route::group(['middleware' => ['auth']],function (){
     //支付宝同步回调
     Route::get('payment/alipay/return', 'PaymentController@alipayReturn')->name('payment.alipay.return');
 
+    // 收货
+    Route::post('orders/{order}/received', 'OrderController@received')->name('orders.received');
+
+
 });
 
 //商品列表
