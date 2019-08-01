@@ -34,6 +34,11 @@ Route::group(['middleware' => ['auth']],function (){
     Route::get('orders/{order}', 'OrderController@show')->name('orders.show');
     Route::post('orders', 'OrderController@store')->name('orders.store');
 
+    //支付宝支付
+    Route::get('payment/{order}/alipay', 'PaymentController@payByAlipay')->name('payment.alipay');
+    //支付宝同步回调
+    Route::get('payment/alipay/return', 'PaymentController@alipayReturn')->name('payment.alipay.return');
+
 });
 
 //商品列表
@@ -41,10 +46,6 @@ Route::get('products','ProductController@index')->name('products.index');
 Route::get('products/{product}','ProductController@show')->name('products.show');
 Route::post('product','ProductController@getPrice')->name('products.price');
 
-Route::get('alipay', function() {
-    return app('alipay')->web([
-        'out_trade_no' => time(),
-        'total_amount' => '1',
-        'subject' => 'test subject - 测试',
-    ]);
-});
+
+//支付宝异步回调
+Route::post('payment/alipay/notify', 'PaymentController@alipayNotify')->name('payment.alipay.notify');
