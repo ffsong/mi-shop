@@ -3,10 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class CouponCode extends Model
 {
+    use SoftDeletes;
 
     // 优惠券类型
     const TYPE_FIXED = 'fixed';
