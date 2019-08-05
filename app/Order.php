@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\Exceptions\InvalidRequestException;
 use Illuminate\Database\Eloquent\Model;
+use Ramsey\Uuid\Uuid;
 
 class Order extends Model
 {
@@ -102,6 +104,34 @@ class Order extends Model
         \Log::warning('find order no failed');
 
         return false;
+    }
+
+    // 判断是否允许评论
+    public function checkReview($order)
+    {
+        if (!$order->paid_at) {
+            throw new InvalidRequestException('该订单未支付，不可评价');
+        }
+        //订单未收货不可评价
+        if ($order->ship_status !== self::SHIP_STATUS_RECEIVED){
+            throw new InvalidRequestException('未收货不能评价');
+        }
+        // 判断是否已经评价
+        if ($order->reviewed) {
+            throw new InvalidRequestException('该订单已评价，不可重复提交');
+        }
+    }
+
+    // 生成退款订单号
+    public static function getAvailableRefundNo()
+    {
+        do {
+            // Uuid类可以用来生成大概率不重复的字符串
+            $no = Uuid::uuid4()->getHex();
+            // 为了避免重复我们在生成之后在数据库中查询看看是否已经存在相同的退款订单号
+        } while (self::query()->where('refund_no', $no)->exists());
+
+        return $no;
     }
 
 

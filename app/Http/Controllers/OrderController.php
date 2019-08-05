@@ -63,20 +63,7 @@ class OrderController extends Controller
     {
         $this->authorize('own', $order);
 
-        // 判断是否已经支付
-        if (!$order->paid_at) {
-            throw new InvalidRequestException('该订单未支付，不可评价');
-        }
-
-        //订单未收货不可评价
-        if ($order->ship_status !== Order::SHIP_STATUS_RECEIVED){
-            throw new InvalidRequestException('未收货不能评价');
-        }
-
-        // 判断是否评论
-        if($order->reviewed){
-            throw new InvalidRequestException('已评论过');
-        }
+        $order->checkReview($order);
 
         return view('orders.review', ['order' => $order->load(['items.productSku', 'items.product'])]);
     }
@@ -85,17 +72,8 @@ class OrderController extends Controller
     public function sendReview(Order $order, SendReviewRequest  $request)
     {
         $this->authorize('own', $order);
-        if (!$order->paid_at) {
-            throw new InvalidRequestException('该订单未支付，不可评价');
-        }
-        //订单未收货不可评价
-        if ($order->ship_status !== Order::SHIP_STATUS_RECEIVED){
-            throw new InvalidRequestException('未收货不能评价');
-        }
-        // 判断是否已经评价
-        if ($order->reviewed) {
-            throw new InvalidRequestException('该订单已评价，不可重复提交');
-        }
+
+        $order->checkReview($order);
 
        $reviews = $request->input('reviews');
 
