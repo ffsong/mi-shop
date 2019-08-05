@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\OrderReviewed;
 use App\Exceptions\InvalidRequestException;
+use App\Http\Requests\ApplyRefundRequest;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\SendReviewRequest;
 use App\Order;
@@ -66,8 +67,14 @@ class OrderController extends Controller
         if (!$order->paid_at) {
             throw new InvalidRequestException('该订单未支付，不可评价');
         }
+
+        //订单未收货不可评价
+        if ($order->ship_status !== Order::SHIP_STATUS_RECEIVED){
+            throw new InvalidRequestException('未收货不能评价');
+        }
+
         // 判断是否评论
-        if($order->reviewed === 1){
+        if($order->reviewed){
             throw new InvalidRequestException('已评论过');
         }
 
@@ -80,6 +87,10 @@ class OrderController extends Controller
         $this->authorize('own', $order);
         if (!$order->paid_at) {
             throw new InvalidRequestException('该订单未支付，不可评价');
+        }
+        //订单未收货不可评价
+        if ($order->ship_status !== Order::SHIP_STATUS_RECEIVED){
+            throw new InvalidRequestException('未收货不能评价');
         }
         // 判断是否已经评价
         if ($order->reviewed) {
@@ -107,6 +118,28 @@ class OrderController extends Controller
         });
 
         return redirect()->back();
+    }
+
+    //退款
+    public function applyRefund(Order $order, ApplyRefundRequest $request)
+    {
+        if (!$order->paid_at){
+            throw new InvalidRequestException('该笔订单未支付');
+        }
+
+        if ($order->refund_status !== Order::REFUND_STATUS_PENDING){
+            throw new InvalidRequestException('订单已经退款，请勿重复申请');
+        }
+
+        // 将用户输入的退款理由放到订单的 extra 字段中
+        $extra                  = $order->extra ?: [];
+        $extra['refund_reason'] = $request->input('reason');
+
+        $order->update([
+            'refund_status' => Order::REFUND_STATUS_APPLIED,
+            'extra' => $extra,
+        ]);
+        return $order;
     }
 
 }
