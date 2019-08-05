@@ -50,6 +50,9 @@ Route::group(['middleware' => ['auth']],function (){
     //退款
     Route::post('orders/{order}/apply_refund','OrderController@applyRefund')->name('orders.apply_refund');
 
+    // 检查优惠券
+    Route::get('coupon_codes/{code}', 'CouponCodeController@show')->name('coupon_codes.show');
+
 
 });
 
