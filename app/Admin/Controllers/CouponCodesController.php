@@ -96,6 +96,12 @@ class CouponCodesController extends AdminController
                 $form->code = CouponCode::findAvailableCode();
             }
         });
+        $form->tools(function (Form\Tools $tools) {
+            // 去掉`删除`按钮
+            $tools->disableDelete();
+            // 去掉`查看`按钮
+            $tools->disableView();
+        });
 
         return $form;
     }
