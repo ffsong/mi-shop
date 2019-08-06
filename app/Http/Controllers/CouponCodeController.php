@@ -8,13 +8,13 @@ use Illuminate\Http\Request;
 
 class CouponCodeController extends Controller
 {
-    public function show($code)
+    public function show(Request $request, $code)
     {
         // 优惠券是否存在
         if(!$record  = CouponCode::query()->where('code',$code)->first()){
             abort(404);
         }
-        $record->checkAvailable();
+        $record->checkAvailable($request->user());
 
         return $record;
     }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\CouponCode;
+use App\Exceptions\CouponCodeUnavailableException;
 use App\User;
 use App\UserAddress;
 use App\Order;
@@ -13,11 +14,11 @@ use Carbon\Carbon;
 
 class OrderService
 {
-    public function store(User $user, UserAddress $address, $remark, $items,  CouponCode $coupon = null)
+    public function store(User $user, UserAddress $address, $remark, $items, CouponCode $coupon = null)
     {
         // 如果传入了优惠券，则先检查是否可用
         if ($coupon) {
-            $coupon->checkAvailable();
+            $coupon->checkAvailable($user);
         }
 
         // 开启一个数据库事务
@@ -60,7 +61,7 @@ class OrderService
 
             if ($coupon) {
                 // 总金额已经计算出来了，检查是否符合优惠券规则
-                $coupon->checkAvailable($totalAmount);
+                $coupon->checkAvailable($user, $totalAmount);
                 // 把订单金额修改为优惠后的金额
                 $totalAmount = $coupon->getAdjustedPrice($totalAmount);
                 // 将订单与优惠券关联
