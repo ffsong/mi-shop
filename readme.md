@@ -31,3 +31,5 @@
     运行迁移 `php artisan migrate`
      
     然后导入管理后台数据 `  mysql -u{用户名} -p{密码} { 数据库名 } < database/admin.sql`
+    
+    
