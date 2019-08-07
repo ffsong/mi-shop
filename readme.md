@@ -13,7 +13,9 @@
 * 安装 Nodejs 依赖
 
     配置镜像加速 `yarn config set registry https://registry.npm.taobao.org`
+    
     yarn 命令安装 Nodejs 依赖 `SASS_BINARY_SITE=http://npm.taobao.org/mirrors/node-sass yarn`
+    
     编译前端代码 `yarn dev`
     
 * 配置 .env 文件
