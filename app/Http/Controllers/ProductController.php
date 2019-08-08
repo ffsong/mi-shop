@@ -7,7 +7,7 @@ use App\Exceptions\InvalidRequestException;
 use App\OrderItem;
 use App\Product;
 use App\ProductSku;
-use http\Env\Response;
+use App\Services\CategoryService;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -67,6 +67,7 @@ class ProductController extends Controller
                 'order'  => $order,
             ],
             'category' => $category ?? null,
+//            'categoryTree' => $categoryService->getCategoryTree(),
         ]);
     }
 
