@@ -58,12 +58,21 @@ class ProductSkuController extends Controller
     public function update(ProductSku $productSku, Request $request ,$id)
     {
        $arr = $request->input('attributes');
-        $data = [];
 
-        $productSku = $productSku->checkSku($arr);
+        $re = $productSku->checkSku($arr);
 
-        if( count($productSku) ) {
+        if( count($re) ) {
             return redirect()->back()->withErrors('sku 已存在');
+        }
+
+        $data = [];
+        foreach ($arr as $key => $value) {
+            if($value){
+                $data[] = [
+                    'id' => $key,
+                    'value' => $value
+                ];
+            }
         }
 
        $data = [
@@ -72,7 +81,6 @@ class ProductSkuController extends Controller
            'stock' => $request->input('stock',0),
            'attributes' => $data,
        ];
-
         ProductSku::query()->create($data);
 
         return redirect()->route('product-skus.index');

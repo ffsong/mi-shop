@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Exceptions\InvalidRequestException;
 use App\OrderItem;
 use App\Product;
@@ -15,6 +16,21 @@ class ProductController extends Controller
     {
 
         $builder = Product::query()->where('on_sale',true);
+
+        // 商品类目筛选商品
+        if($request->input('category_id') && $category = Category::find($request->input('category_id'))){
+
+            // 是父类目 ，筛选该类目下所有子类目中的商品
+            if($category->is_directory){
+                $builder->whereHas('category', function ($query) use ($category) {
+                    // 这里的逻辑参考本章第一节
+                    $query->where('path', 'like', $category->path.$category->id.'-%');
+                });
+            }else{
+                // 如果这不是一个父类目，则直接筛选此类目下的商品
+                $builder->where('category_id', $category->id);
+            }
+        }
 
         // 判断是否有提交 search 参数，如果有就赋值给 $search 变量
         // search 参数用来模糊搜索商品
@@ -41,6 +57,7 @@ class ProductController extends Controller
                 }
             }
         }
+
         $products = $builder->paginate(16);
 
         return view('products.index', [
@@ -49,6 +66,7 @@ class ProductController extends Controller
                 'search' => $search,
                 'order'  => $order,
             ],
+            'category' => $category ?? null,
         ]);
     }
 

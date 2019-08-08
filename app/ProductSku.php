@@ -32,6 +32,7 @@ class ProductSku extends Model
     // 查询是否存在当前单品
     public function checkSku($arr = [])
     {
+        $data = [];
         foreach ($arr as $key => $value) {
             if($value){
                 $data[] = [

@@ -64,7 +64,6 @@ class Product extends Model
                 foreach ($skus as $k => $sku){
                     foreach ($sku['attributes'] as $key1 => $attribute){
                         if($skuAttribute['id'] == $attribute['id']){
-
                             $skuAttributes[$key]['list'][] = $attribute;
                         }
                     }
