@@ -11,7 +11,7 @@ class CouponCodeController extends Controller
     public function show(Request $request, $code)
     {
         // 优惠券是否存在
-        if(!$record  = CouponCode::query()->where('code',$code)->first()){
+        if(!$record = CouponCode::query()->where('code',$code)->first()){
             abort(404);
         }
         $record->checkAvailable($request->user());

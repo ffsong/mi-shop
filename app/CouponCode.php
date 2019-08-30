@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Exceptions\CouponCodeUnavailableException;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
@@ -41,7 +42,7 @@ class CouponCode extends Model
     ];
 
     // 指明日期类型
-    protected $date = ['not_before', 'not_after'];
+    protected $dates = ['not_before', 'not_after'];
 
     public function getDescriptionAttribute()
     {
